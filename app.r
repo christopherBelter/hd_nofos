@@ -80,8 +80,8 @@ ui <- page_sidebar(
         card_header("Data Processing"),
         p("Once I have the data, I then add columns to describe each NOFO’s document type, NICHD involvement, and NICHD strategic plan theme(s)."),
         p("The document type is derived from the NOFO opportunity number (i.e. PAR-25-250 is a PAR document type)."),
-        p("NICHD’s involvement is estimated based on several factors. If NICHD or NCMRR is mentioned in the summary description, if the opportunity number contains \"-HD-\", if NICHD’s opportunity assistance number (93.865) is the only number listed, or if the opportunity number is in a known list of numbers, NICHD’s involvement is set to \"HD Primary\". If none of these are true, but NICHD’s assistance listing number is included in the NOFO, NICHD’s involvement is set to \"HD Secondary.\" If none of these are true, NICHD’s involvement is set to \"No HD Involvement.\""),
-        p("Plan themes")
+        p("I estimate NICHD’s involvement based on several factors. If NICHD or NCMRR is mentioned in the summary description, if the opportunity number contains \"-HD-\", if NICHD’s opportunity assistance number (93.865) is the only number listed, or if the opportunity number is in a known list of numbers, NICHD’s involvement is set to \"HD Primary\". If none of these are true, but NICHD’s assistance listing number is included in the NOFO, NICHD’s involvement is set to \"HD Secondary.\" If none of these are true, NICHD’s involvement is set to \"No HD Involvement.\""),
+        p("I assign strategic plan themes to documents using a basic text mining approach. First, I search for appearances of terms related to each of NICHD’s strategic plan themes in each NOFO’s summary description. I then assign one or more themes to each document based on which term(s) are found. If no terms are found, the document is categorized as “Unclassified.” NOFO forecasts that do not currently have NICHD involvement but that do use one or more of these theme-specific terms are listed in the “Relevant Non-HD Forecasts” tab.")
       )
     )
   )

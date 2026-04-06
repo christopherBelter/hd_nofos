@@ -19,6 +19,7 @@ nofos <- nofos %>%
   left_join(vbic_out$concept_list[,c(1,3,4)], by = c("opportunity_id" = "doc_id")) %>% 
   select(!doc_text) %>% 
   arrange(desc(summary.post_date), opportunity_number)
+write.csv(nofos, file = paste0("projects/foam/all_nih_", gsub("-", "_", as.character(Sys.Date())), ".csv"))
 
 
 nofo_display <- nofos %>% 
@@ -39,6 +40,7 @@ nofo_display <- nofos %>%
     all_concepts = gsub("theme5", "Pharmacology & Therapeutics", all_concepts),
     all_concepts = gsub("ncmrr", "Rehabilitation", all_concepts),
     all_concepts = gsub("unclassified", "Unclassified", all_concepts),
+    all_concepts = gsub(";", "; ", all_concepts),
     hd_involvement = case_when(
       (grepl("NICHD|Eunice|NCMRR", nofos$summary.summary_description) == TRUE | grepl("-HD-", opportunity_number) | opportunity_assistance_numbers == "93.865" | grepl("PAR-25-11[0-3]", opportunity_number)) & grepl("93.865", opportunity_assistance_numbers) ~ "HD Primary",
       grepl("93.865", opportunity_assistance_numbers) ~ "HD Secondary",
@@ -56,10 +58,21 @@ write.csv(hd_nofos, file = "shiny dashboards/hd_nofos/data/hd_nofos_current.csv"
 ## missed PAR-25-185, PAR-25-110, PAR-25-111, PAR-25-112, PAR-25-113, ...
 
 relevant_nofos <- nofo_display %>% 
-  filter(all_concepts != "Unclassified", grepl("93.865", opportunity_assistance_numbers) == FALSE, opportunity_status == "Forecasted") %>% 
+  filter(all_concepts != "Unclassified", all_concepts != "Pharmacology & Therapeutics", grepl("93.865", opportunity_assistance_numbers) == FALSE, opportunity_status == "Forecasted") %>% 
   select(opportunity_number, nofo_type, opportunity_title, summary.post_date, all_concepts, run_date)
 write.csv(relevant_nofos, file = paste0("projects/foam/nofo_forecast_relevant_", gsub("-", "_", as.character(Sys.Date())), ".csv"), row.names = FALSE)
 write.csv(relevant_nofos, file = "shiny dashboards/hd_nofos/data/nofo_forecast_relevant_current.csv", row.names = FALSE)
 
 rsconnect::writeManifest(appDir = "shiny dashboards/hd_nofos/")
 ##rsconnect::deployApp(appDir = "shiny dashboards/hd_nofos/")
+
+## GitHub repo: https://github.com/christopherBelter/hd_nofos
+## Posit Connect URL: https://christopherbelter-hd-nofos.share.connect.posit.cloud/
+## deploy from GitHub: https://docs.posit.co/connect-cloud/user/publish/github.html
+	## automatic republishing is enabled by default; any time you push files to the repo, the cloud will auto-detect the change and auto-redeploy the content
+	## so that deployApp function isn't strictly necessary for a posit cloud deployment; just push changes (or upload files) to GitHub and it'll auto-refresh
+	## publish something else: to to Home in posit cloud and click "publish"
+## my Posit Connect Cloud sign-in is linked to my GitHub account
+
+#---
+View(vbic_out$term_vocab)
