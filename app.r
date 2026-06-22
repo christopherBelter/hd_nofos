@@ -11,6 +11,8 @@ the_forecasts <- the_forecasts %>%
     `NOFO Type` = nofo_type,
     `Opportunity Title` = opportunity_title,
     `Post Date` = summary.post_date,
+    `Close Date` = summary.close_date,
+    `Status` = opportunity_status,
     `NICHD Theme(s)` = all_concepts
   )
 
@@ -60,7 +62,7 @@ ui <- page_sidebar(
       dataTableOutput("hd_secondary_table")
     ),
     nav_panel(
-      title = "Relevant Non-HD Forecasts",
+      title = "Relevant Non-HD NOFOs",
       hr(),
       dataTableOutput("forecast_table")
     ),
@@ -106,7 +108,7 @@ server <- function(input, output) {
         filter(`NOFO Type` == input$nofo_type, grepl(input$theme, `NICHD Theme(s)`))
     }
   })
-  output$forecast_table <- renderDataTable(filtered_forecasts()[,1:5], escape = FALSE, rownames = FALSE)
+  output$forecast_table <- renderDataTable(filtered_forecasts()[,1:7], escape = FALSE, rownames = FALSE)
   ## set filter = "top" to add a row of filter options to the top of the table, so you don't even have to do input options if you don't want to
   ## could also potentially hide columns in the display but have them available to filter on
   filtered_hd <- reactive({

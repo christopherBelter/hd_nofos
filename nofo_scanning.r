@@ -58,8 +58,8 @@ write.csv(hd_nofos, file = "shiny dashboards/hd_nofos/data/hd_nofos_current.csv"
 ## missed PAR-25-185, PAR-25-110, PAR-25-111, PAR-25-112, PAR-25-113, ...
 
 relevant_nofos <- nofo_display %>% 
-  filter(all_concepts != "Unclassified", all_concepts != "Pharmacology & Therapeutics", grepl("93.865", opportunity_assistance_numbers) == FALSE, opportunity_status == "Forecasted") %>% 
-  select(opportunity_number, nofo_type, opportunity_title, summary.post_date, all_concepts, run_date)
+  filter(all_concepts != "Unclassified", all_concepts != "Pharmacology & Therapeutics", grepl("93.865", opportunity_assistance_numbers) == FALSE, opportunity_status %in% c("Forecasted", "Posted")) %>% 
+  select(opportunity_number, nofo_type, opportunity_title, summary.post_date, summary.close_date, opportunity_status, all_concepts, run_date)
 write.csv(relevant_nofos, file = paste0("projects/foam/nofo_forecast_relevant_", gsub("-", "_", as.character(Sys.Date())), ".csv"), row.names = FALSE)
 write.csv(relevant_nofos, file = "shiny dashboards/hd_nofos/data/nofo_forecast_relevant_current.csv", row.names = FALSE)
 
@@ -73,6 +73,8 @@ rsconnect::writeManifest(appDir = "shiny dashboards/hd_nofos/")
 	## so that deployApp function isn't strictly necessary for a posit cloud deployment; just push changes (or upload files) to GitHub and it'll auto-refresh
 	## publish something else: to to Home in posit cloud and click "publish"
 ## my Posit Connect Cloud sign-in is linked to my GitHub account
+
+nofos %>% mutate(yr_wk = floor_date(summary.post_date, "weeks")) %>% count(yr_wk)
 
 #---
 View(vbic_out$term_vocab)
