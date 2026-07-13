@@ -51,6 +51,10 @@ nofo_display <- nofos %>%
   ) %>% 
   arrange(desc(summary.post_date))
 
+nofo_disp <- nofo_display %>% 
+  select(opportunity_number, nofo_type, opportunity_title, summary.post_date, summary.close_date, opportunity_status, all_concepts, hd_involvement, run_date)
+write.csv(nofo_disp, file = "shiny dashboards/hd_nofos/data/nofo_data.csv", row.names = FALSE)
+
 hd_nofos <- nofo_display %>% 
   filter(grepl("93.865", opportunity_assistance_numbers), grepl("\\(Parent [A-Z]..\\b.*\\)|Parent SBIR|Parent STTR", opportunity_title) == FALSE) %>% 
   select(opportunity_number, nofo_type, opportunity_title, summary.post_date, summary.close_date, opportunity_status, all_concepts, hd_involvement, run_date)
